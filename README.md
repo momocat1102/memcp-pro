@@ -12,6 +12,35 @@ One-click setup for [memcp](https://github.com/maydali28/memcp) with [Claude Cod
 
 After installation, restart Claude Code and your memories will be there.
 
+## What Makes It "Pro"
+
+memcp-pro installs an **enhanced fork** of memcp with upgrades across memory lifecycle, search, and multi-project support — built and battle-tested over real Claude Code workflows.
+
+### Core Enhancements (in memcp fork)
+
+| Feature | What It Does |
+|---------|-------------|
+| **Weibull Decay Engine** | Three-tier memory classification (peripheral → working → core) with mathematically-modeled forgetting curves. Each tier has distinct decay parameters so important memories last longer naturally. |
+| **7-Decision Smart Dedup** | LLM-powered deduplication with 7 decisions: CREATE, SKIP, MERGE, SUPERSEDE, SUPPORT, CONTEXTUALIZE, CONTRADICT. Prevents memory bloat while preserving nuance. |
+| **L0/L1 Layered Storage** | Every memory gets a one-sentence index (L0, ≤100 chars) and a structured overview (L1, ≤500 chars). Search matches against L0 first for speed, then loads L1 for detail. |
+| **Search Pipeline Tuning** | Length normalization, BM25 protection, CJK-aware thresholds (6 chars), recency boost, MMR diversity, and support_count boost — optimized for real-world multilingual usage. |
+| **Cross-Project Memory** | `access.json` config with wildcard patterns and `source_project` annotation. Share knowledge across projects without duplicating memories. |
+| **Tier Auto-Promotion** | Memories automatically promote (peripheral → working → core) or demote based on recall frequency. Frequently accessed knowledge becomes permanent. |
+| **Caller-Side Architecture** | `memcp_dedup_check` + `memcp_smart_remember` run dedup logic on the Claude side — **no API key needed** in the MCP server. |
+
+### Pro Integration Layer (hooks + skills + protocol)
+
+| Component | What It Does |
+|-----------|-------------|
+| **4 Lifecycle Hooks** | SessionStart auto-load, PreCompact save reminder, progressive Stop warnings (10/20/30 turns at >55% context), PostToolUse counter reset |
+| **3 Skills** | `/memcp-save`, `/memcp-search`, `/memcp-session-start` — manual memory operations with guided workflows |
+| **Memory Protocol** | CLAUDE.md protocol for smart dedup workflow: check → decide → store. Includes knowledge extraction triggers and scope selection rules (project vs global) |
+| **27 Auto-Approved Tools** | All memcp MCP tools pre-configured for zero-friction usage |
+
+### Test Coverage
+
+656 tests passing, including 198 tests specifically for the pro enhancements.
+
 ## Prerequisites
 
 - **Python 3.11+** — memcp is a Python MCP server

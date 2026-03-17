@@ -12,6 +12,35 @@
 
 安裝完成後，重啟 Claude Code 即可使用。
 
+## 為什麼叫 "Pro"
+
+memcp-pro 安裝的是 memcp 的**增強版 fork**，涵蓋記憶生命週期、搜尋管線、多專案支援的全面升級 — 在實際 Claude Code 工作流中開發與驗證。
+
+### 核心增強（memcp fork 內建）
+
+| 功能 | 說明 |
+|------|------|
+| **Weibull 衰減引擎** | 三層記憶分類（peripheral → working → core），數學建模的遺忘曲線。每層有不同 beta 參數，重要記憶自然存活更久。 |
+| **七種智慧去重決策** | LLM 驅動的去重系統，支援 CREATE、SKIP、MERGE、SUPERSEDE、SUPPORT、CONTEXTUALIZE、CONTRADICT 七種決策。防止記憶膨脹同時保留細微差異。 |
+| **L0/L1 分層儲存** | 每筆記憶都有一句話索引（L0，≤100 字元）和結構化概覽（L1，≤500 字元）。搜尋優先比對 L0 加速，再載入 L1 取得細節。 |
+| **搜尋管線調校** | 長度正規化、BM25 保護、CJK 閾值（6 字元）、新近度加成、MMR 多樣性、support_count 加成 — 針對多語言實際使用最佳化。 |
+| **跨專案記憶存取** | `access.json` 設定支援萬用字元和 `source_project` 標注。跨專案共享知識，不需複製記憶。 |
+| **Tier 自動晉升/降級** | 記憶根據召回頻率自動晉升（peripheral → working → core）或降級。常用知識自動變為永久記憶。 |
+| **Caller-side 架構** | `memcp_dedup_check` + `memcp_smart_remember` 在 Claude 端執行去重邏輯 — MCP server **不需要 API key**。 |
+
+### Pro 整合層（hooks + skills + 協議）
+
+| 元件 | 說明 |
+|------|------|
+| **4 個生命週期 Hooks** | SessionStart 自動載入、PreCompact 存檔提醒、漸進式 Stop 警告（10/20/30 輪，context > 55%）、PostToolUse 計數器重置 |
+| **3 個 Skills** | `/memcp-save`、`/memcp-search`、`/memcp-session-start` — 手動記憶操作，附引導工作流 |
+| **記憶管理協議** | CLAUDE.md 協議：查重 → 決策 → 存入的智慧去重工作流。包含知識提取觸發點和 scope 選擇規則（project vs global） |
+| **27 個自動批准工具** | 所有 memcp MCP 工具預設免手動批准，零阻力使用 |
+
+### 測試覆蓋
+
+656 個測試通過，其中 198 個專為 Pro 增強功能撰寫。
+
 ## 前置需求
 
 - **Python 3.11+** — memcp 是 Python MCP server

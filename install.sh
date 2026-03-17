@@ -24,6 +24,9 @@ MEMCP_DIR="$CLAUDE_DIR/mcp-servers/memcp"
 MCP_CONFIG="$CLAUDE_DIR/mcp.json"
 SETTINGS_FILE="$CLAUDE_DIR/settings.json"
 
+MEMCP_REPO="https://github.com/maydali28/memcp.git"
+MEMCP_VERSION="v0.3.0"  # Pinned version — tested and compatible
+
 ERRORS=()
 
 # ── Step 1: Pre-flight Checks ────────────────────────────
@@ -70,11 +73,22 @@ step "Step 2: Install memcp (Persistent Memory Server)"
 mkdir -p "$CLAUDE_DIR/mcp-servers"
 
 if [ -d "$MEMCP_DIR/src" ]; then
-  info "memcp already installed at $MEMCP_DIR, updating..."
-  cd "$MEMCP_DIR" && git pull --quiet 2>/dev/null || warn "git pull failed, using existing version"
+  info "memcp already installed at $MEMCP_DIR"
+  cd "$MEMCP_DIR"
+  # Verify it's the correct repo (maydali28/memcp, not a different fork)
+  REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+  if echo "$REMOTE_URL" | grep -q "maydali28/memcp"; then
+    info "Correct repo detected, checking version..."
+    git fetch --tags --quiet 2>/dev/null || true
+  else
+    warn "Existing memcp is from a different source: $REMOTE_URL"
+    warn "memcp-pro requires https://github.com/maydali28/memcp (v0.3.0)"
+    warn "Other forks (e.g., anthropics/memory) may use Alembic migrations which are incompatible."
+    ERRORS+=("memcp is from wrong source: $REMOTE_URL")
+  fi
 else
-  info "Cloning memcp..."
-  git clone https://github.com/maydali28/memcp.git "$MEMCP_DIR" 2>/dev/null || {
+  info "Cloning memcp $MEMCP_VERSION..."
+  git clone "$MEMCP_REPO" "$MEMCP_DIR" 2>/dev/null || {
     if [ -d "$MEMCP_DIR" ]; then
       warn "Clone failed, directory exists. Trying git pull..."
       cd "$MEMCP_DIR" && git pull --quiet 2>/dev/null || true
@@ -86,8 +100,18 @@ else
 fi
 
 if [ -d "$MEMCP_DIR" ]; then
-  info "Setting up Python environment..."
   cd "$MEMCP_DIR"
+
+  # Pin to tested version
+  if git tag -l "$MEMCP_VERSION" | grep -q "$MEMCP_VERSION"; then
+    git checkout "$MEMCP_VERSION" --quiet 2>/dev/null || warn "Could not checkout $MEMCP_VERSION, using current HEAD"
+    ok "Pinned to $MEMCP_VERSION"
+  else
+    CURRENT=$(git describe --tags 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    warn "Tag $MEMCP_VERSION not found, using current version: $CURRENT"
+  fi
+
+  info "Setting up Python environment..."
   if [ ! -d ".venv" ]; then
     python3 -m venv .venv
   fi
@@ -98,12 +122,19 @@ if [ -d "$MEMCP_DIR" ]; then
   }
   deactivate
 
-  # Verify
+  # Verify import
   if "$MEMCP_DIR/.venv/bin/python" -c "import memcp; print('OK')" &>/dev/null; then
     ok "memcp installed and verified"
   else
     warn "memcp installed but import verification failed"
     ERRORS+=("memcp import verification failed")
+  fi
+
+  # Verify no Alembic dependency (wrong fork detection)
+  if "$MEMCP_DIR/.venv/bin/python" -c "import alembic" 2>/dev/null; then
+    warn "Alembic detected — this may indicate a different memcp fork."
+    warn "memcp-pro is tested with maydali28/memcp v0.3.0 (SQLite migrations, no Alembic)."
+    warn "If you see 'No script_location key found' errors, re-clone from the correct repo."
   fi
 else
   err "memcp directory not found, skipping Python setup"

@@ -1,6 +1,6 @@
 # memcp-pro
 
-One-click setup for [memcp](https://github.com/maydali28/memcp) with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — persistent memory across sessions.
+One-click setup for [memcp](https://github.com/maydali28/memcp) (v0.3.0) with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — persistent memory across sessions.
 
 ## What This Does
 
@@ -126,6 +126,19 @@ Then **Reload Window** in VSCode (`Ctrl+Shift+P` → `Reload Window`).
 ### memcp tools require manual approval
 
 Permissions in `~/.claude/settings.json` may not have merged correctly. Re-run `bash install.sh` — it's idempotent and will re-merge permissions.
+
+### "No 'script_location' key found in configuration" on startup
+
+This Alembic migration error means you have a **different memcp fork** installed (not `maydali28/memcp`). Some forks use Alembic for database migrations, which is incompatible with memcp-pro.
+
+memcp-pro is pinned to [maydali28/memcp v0.3.0](https://github.com/maydali28/memcp/releases/tag/v0.3.0), which uses lightweight SQLite `ALTER TABLE ADD COLUMN` migrations (no Alembic).
+
+Fix: remove the wrong version and re-run the installer:
+
+```bash
+rm -rf ~/.claude/mcp-servers/memcp
+bash install.sh
+```
 
 ### Python import error on startup
 

@@ -1,6 +1,6 @@
 # memcp-pro
 
-一鍵安裝 [memcp](https://github.com/maydali28/memcp) 到 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — 跨 session 持久記憶。
+一鍵安裝 [memcp](https://github.com/maydali28/memcp)（v0.3.0）到 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — 跨 session 持久記憶。
 
 ## 功能
 
@@ -126,6 +126,19 @@ claude mcp add memcp -- ~/.claude/mcp-servers/memcp/.venv/bin/python -m memcp.se
 ### memcp 工具需要手動批准
 
 `~/.claude/settings.json` 中的 permissions 可能沒有正確合併。重新執行 `bash install.sh` — 它是冪等的，會重新合併 permissions。
+
+### 啟動時報 "No 'script_location' key found in configuration"
+
+這是 Alembic migration 錯誤，表示安裝到了**不同的 memcp fork**（不是 `maydali28/memcp`）。某些 fork 使用 Alembic 做資料庫遷移，與 memcp-pro 不相容。
+
+memcp-pro 鎖定 [maydali28/memcp v0.3.0](https://github.com/maydali28/memcp/releases/tag/v0.3.0)，使用輕量的 SQLite `ALTER TABLE ADD COLUMN` 遷移（無 Alembic）。
+
+修復方式：移除錯誤版本，重新安裝：
+
+```bash
+rm -rf ~/.claude/mcp-servers/memcp
+bash install.sh
+```
 
 ### 啟動時 Python import 錯誤
 

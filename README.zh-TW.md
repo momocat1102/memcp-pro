@@ -112,7 +112,7 @@ Pro 增強功能的設計參考了以下專案與理論：
 
 - [memcp](https://github.com/maydali28/memcp)（maydali28）— memcp-pro 所增強的核心 MCP 記憶 server。所有 Pro 功能都建構在 memcp 的知識圖譜架構之上（SQLite + 邊關係遍歷 + 27 個 MCP 工具）。
 - [Claude Code](https://github.com/anthropics/claude-code)（Anthropic）— memcp-pro 透過 hooks、skills 和 MCP 協定整合的 AI 編碼 Agent。
-- **memory-lancedb-pro**（內部前身）— 我們早期的 TypeScript 記憶系統（LanceDB + Jina Embeddings），其認知科學設計模式（Weibull 衰減、七種去重決策、L0/L1/L2 分層儲存）被移植到 memcp 的 Python/SQLite 架構。
+- [memory-lancedb-pro](https://github.com/CortexReach/memory-lancedb-pro)（CortexReach）— 我們早期的 TypeScript 記憶系統（LanceDB + Jina Embeddings），其認知科學設計模式（Weibull 衰減、七種去重決策、L0/L1/L2 分層儲存）被移植到 memcp 的 Python/SQLite 架構。
 - **Weibull 拉伸指數衰減** — 三層衰減模型靈感來自認知科學的遺忘曲線研究，使用 Weibull 分佈模擬不同記憶保留模式。[FSRS](https://github.com/open-spaced-repetition/fsrs4anki)（Free Spaced Repetition Scheduler）曾被評估為替代方案，但因過於複雜（21 個參數）而未採用。
 - **BM25 / Okapi BM25** — 搜尋管線的關鍵字匹配和高信度保護基於資訊檢索領域經典的 BM25 排名函數。
 - **MMR（Maximal Marginal Relevance）** — 多樣性結果去重遵循 MMR 演算法（Carbonell & Goldstein, 1998），減少搜尋結果中的冗餘。

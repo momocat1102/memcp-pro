@@ -173,6 +173,22 @@ with open(cfg_path, 'w') as f: json.dump(cfg, f, indent=2)
 fi
 ok "memcp registered in $MCP_CONFIG"
 
+# ── Step 5.5: Register via claude mcp add (VSCode extension) ──
+step "Step 5.5: Register for VSCode Extension"
+
+# VSCode extension reads from ~/.claude.json (project-level), not ~/.claude/mcp.json (CLI global).
+# Use 'claude mcp add' to register in both places for full compatibility.
+if command -v claude &>/dev/null; then
+  info "Registering memcp via 'claude mcp add' for VSCode extension compatibility..."
+  claude mcp add memcp -- "$MEMCP_CMD" -m memcp.server 2>/dev/null && \
+    ok "memcp registered for VSCode extension (claude mcp add)" || \
+    warn "claude mcp add failed — VSCode extension may not detect memcp. See README troubleshooting."
+else
+  warn "Claude Code CLI not found, skipping VSCode extension registration."
+  warn "Run manually after installing Claude Code:"
+  warn "  claude mcp add memcp -- $MEMCP_CMD -m memcp.server"
+fi
+
 # ── Step 6: Configure Permissions ────────────────────────
 step "Step 6: Configure Permissions & Hooks"
 
@@ -375,14 +391,20 @@ ${CYAN}What was installed:${NC}
   ✓ memcp server    → $MEMCP_DIR
   ✓ Hooks (4)       → $CLAUDE_DIR/hooks/memcp-*.sh
   ✓ Skills (3)      → $CLAUDE_DIR/skills/memcp-*/
-  ✓ MCP config      → $MCP_CONFIG
+  ✓ MCP config      → $MCP_CONFIG (CLI)
+  ✓ MCP config      → ~/.claude.json (VSCode extension)
   ✓ Permissions     → $SETTINGS_FILE
 
 ${CYAN}Next steps:${NC}
-  1. ${YELLOW}Restart Claude Code${NC} to activate memcp
+  1. ${YELLOW}Restart Claude Code${NC} (CLI or VSCode) to activate memcp
   2. Start a session — memories will auto-load via SessionStart hook
   3. Use /memcp-save to manually save knowledge
   4. Use /memcp-search to search past memories
+
+${CYAN}VSCode Extension:${NC}
+  If /mcp shows 'No MCP servers configured' in VSCode, run:
+    claude mcp add memcp -- $MEMCP_CMD -m memcp.server
+  Then Reload Window (Ctrl+Shift+P → Reload Window).
 
 ${CYAN}Uninstall:${NC}
   bash $(dirname "$0")/uninstall.sh

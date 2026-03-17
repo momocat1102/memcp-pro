@@ -65,13 +65,18 @@ bash install.sh
 | memcp server | `~/.claude/mcp-servers/memcp/` | MCP server，知識圖譜（graph.db）|
 | Hooks (4) | `~/.claude/hooks/memcp-*.sh` | 自動載入記憶、存檔提醒、壓縮保護 |
 | Skills (3) | `~/.claude/skills/memcp-*/` | `/memcp-save`、`/memcp-search`、`/memcp-session-start` |
-| MCP 設定 | `~/.claude/mcp.json` | Server 註冊（合併，不覆蓋）|
+| MCP 設定（CLI） | `~/.claude/mcp.json` | CLI 的 Server 註冊（合併，不覆蓋）|
+| MCP 設定（VSCode） | `~/.claude.json` | VSCode extension 的 Server 註冊（透過 `claude mcp add`）|
 | 權限 | `~/.claude/settings.json` | 工具自動批准（合併，不覆蓋）|
 | 協議 | `~/.claude/CLAUDE.md` | 記憶管理指引（可選，附加到尾部）|
 
 ### 連接原理
 
-Claude Code 啟動時讀取 `~/.claude/mcp.json` 來發現 MCP server。安裝程式會寫入**絕對路徑**（不是 `$HOME`），確保 Claude Code 能直接啟動 memcp server。`settings.json` 中的 permissions 讓全部 27 個 memcp 工具免手動批准。
+**CLI** 啟動時讀取 `~/.claude/mcp.json` 來發現 MCP server。安裝程式會寫入**絕對路徑**（不是 `$HOME`），確保能直接啟動 memcp server。
+
+**VSCode extension** 讀取的是 `~/.claude.json`（專案級設定），這是不同的檔案。安裝程式會執行 `claude mcp add` 同時在此註冊 memcp。
+
+`settings.json` 中的 permissions 讓全部 27 個 memcp 工具免手動批准。
 
 ## Hooks
 
@@ -105,6 +110,35 @@ bash uninstall.sh
 ```
 
 移除 hooks、skills、MCP 設定和 permissions。記憶資料（`~/.memcp/`）會保留，除非你選擇刪除。
+
+## 疑難排解
+
+### VSCode extension 顯示 "No MCP servers configured"
+
+VSCode extension 讀取的是 `~/.claude.json`，而非 `~/.claude/mcp.json`。安裝程式會嘗試透過 `claude mcp add` 註冊，但如果失敗或被跳過：
+
+```bash
+claude mcp add memcp -- ~/.claude/mcp-servers/memcp/.venv/bin/python -m memcp.server
+```
+
+然後在 VSCode 中 **Reload Window**（`Ctrl+Shift+P` → `Reload Window`）。
+
+### memcp 工具需要手動批准
+
+`~/.claude/settings.json` 中的 permissions 可能沒有正確合併。重新執行 `bash install.sh` — 它是冪等的，會重新合併 permissions。
+
+### 啟動時 Python import 錯誤
+
+venv 可能不完整，重新建立：
+
+```bash
+cd ~/.claude/mcp-servers/memcp
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[all]"
+deactivate
+```
 
 ## 致謝
 

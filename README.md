@@ -65,13 +65,18 @@ Then **restart Claude Code**. That's it.
 | memcp server | `~/.claude/mcp-servers/memcp/` | MCP server with knowledge graph (graph.db) |
 | Hooks (4) | `~/.claude/hooks/memcp-*.sh` | Auto-load memories, save reminders, compact protection |
 | Skills (3) | `~/.claude/skills/memcp-*/` | `/memcp-save`, `/memcp-search`, `/memcp-session-start` |
-| MCP config | `~/.claude/mcp.json` | Server registration (merged, not overwritten) |
+| MCP config (CLI) | `~/.claude/mcp.json` | Server registration for CLI (merged, not overwritten) |
+| MCP config (VSCode) | `~/.claude.json` | Server registration for VSCode extension (via `claude mcp add`) |
 | Permissions | `~/.claude/settings.json` | Tool auto-approval (merged, not overwritten) |
 | Protocol | `~/.claude/CLAUDE.md` | Memory management guidelines (optional, appended) |
 
 ### How It Connects
 
-Claude Code reads `~/.claude/mcp.json` at startup to discover MCP servers. The installer writes the memcp entry with **absolute paths** (not `$HOME`) so Claude Code can launch the server immediately. Permissions in `settings.json` ensure all 27 memcp tools are auto-approved.
+**CLI** reads `~/.claude/mcp.json` at startup to discover MCP servers. The installer writes the memcp entry with **absolute paths** (not `$HOME`) so Claude Code can launch the server immediately.
+
+**VSCode extension** reads from `~/.claude.json` (project-level config), which is a different file. The installer runs `claude mcp add` to register memcp there as well.
+
+Permissions in `settings.json` ensure all 27 memcp tools are auto-approved.
 
 ## Hooks
 
@@ -105,6 +110,35 @@ bash uninstall.sh
 ```
 
 Removes hooks, skills, MCP config, and permissions. Your memory data (`~/.memcp/`) is preserved unless you explicitly choose to delete it.
+
+## Troubleshooting
+
+### VSCode extension shows "No MCP servers configured"
+
+The VSCode extension reads MCP config from `~/.claude.json`, not `~/.claude/mcp.json`. The installer attempts to register via `claude mcp add`, but if it failed or was skipped:
+
+```bash
+claude mcp add memcp -- ~/.claude/mcp-servers/memcp/.venv/bin/python -m memcp.server
+```
+
+Then **Reload Window** in VSCode (`Ctrl+Shift+P` → `Reload Window`).
+
+### memcp tools require manual approval
+
+Permissions in `~/.claude/settings.json` may not have merged correctly. Re-run `bash install.sh` — it's idempotent and will re-merge permissions.
+
+### Python import error on startup
+
+The venv may be incomplete. Re-create it:
+
+```bash
+cd ~/.claude/mcp-servers/memcp
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[all]"
+deactivate
+```
 
 ## Acknowledgments
 

@@ -106,6 +106,17 @@ bash uninstall.sh
 
 Removes hooks, skills, MCP config, and permissions. Your memory data (`~/.memcp/`) is preserved unless you explicitly choose to delete it.
 
+## Acknowledgments
+
+The pro enhancements were designed by studying and building upon these projects and ideas:
+
+- [memcp](https://github.com/maydali28/memcp) by maydali28 — The core MCP memory server that memcp-pro enhances. All pro features are built on top of memcp's knowledge graph architecture (SQLite + edge-based traversal + 27 MCP tools).
+- [Claude Code](https://github.com/anthropics/claude-code) by Anthropic — The AI coding agent that memcp-pro integrates with via hooks, skills, and MCP protocol.
+- **memory-lancedb-pro** (internal predecessor) — Our earlier TypeScript memory system (LanceDB + Jina Embeddings) whose cognitive-science design patterns (Weibull decay, seven dedup decisions, L0/L1/L2 layered storage) were ported to memcp's Python/SQLite architecture.
+- **Weibull stretched exponential decay** — The three-tier decay model is inspired by cognitive science research on forgetting curves, using the Weibull distribution to model different memory retention patterns. [FSRS](https://github.com/open-spaced-repetition/fsrs4anki) (Free Spaced Repetition Scheduler) was evaluated as an alternative but deemed too complex (21 parameters) for this use case.
+- **BM25 / Okapi BM25** — The search pipeline's keyword matching and high-confidence protection are based on the classic BM25 ranking function from information retrieval.
+- **MMR (Maximal Marginal Relevance)** — The diversity-aware result deduplication follows the MMR algorithm (Carbonell & Goldstein, 1998) to reduce redundancy in search results.
+
 ## License
 
 MIT

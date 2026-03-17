@@ -78,6 +78,8 @@ Then **restart Claude Code**. That's it.
 
 Permissions in `settings.json` ensure all 27 memcp tools are auto-approved.
 
+**Data storage**: Memory data lives at `~/.memcp/graph.db` (SQLite). The database is **auto-created on first memory save** — no manual setup needed. The installer creates the `~/.memcp/` directory; `graph.db` appears after your first `memcp_remember` call.
+
 ## Hooks
 
 | Hook | Event | What It Does |

@@ -143,6 +143,11 @@ fi
 
 cd "$SCRIPT_DIR"
 
+# Ensure memcp data directory exists (graph.db will be created on first use)
+MEMCP_DATA="${MEMCP_DATA_DIR:-$HOME/.memcp}"
+mkdir -p "$MEMCP_DATA"
+ok "Data directory ready: $MEMCP_DATA (graph.db will be auto-created on first memory save)"
+
 # ── Step 3: Install Hooks ────────────────────────────────
 step "Step 3: Install Hook Scripts"
 

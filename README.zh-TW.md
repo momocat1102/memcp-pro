@@ -78,6 +78,8 @@ bash install.sh
 
 `settings.json` 中的 permissions 讓全部 27 個 memcp 工具免手動批准。
 
+**資料儲存**：記憶資料存在 `~/.memcp/graph.db`（SQLite）。資料庫會在**第一次存入記憶時自動建立** — 不需手動設定。安裝程式會建立 `~/.memcp/` 目錄；`graph.db` 在你第一次呼叫 `memcp_remember` 後出現。
+
 ## Hooks
 
 | Hook | 事件 | 功能 |

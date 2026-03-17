@@ -1,0 +1,7 @@
+{
+  "memcp": {
+    "command": "__MEMCP_DIR__/.venv/bin/python",
+    "args": ["-m", "memcp.server"],
+    "cwd": "__MEMCP_DIR__"
+  }
+}

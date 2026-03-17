@@ -1,0 +1,31 @@
+{
+  "allow": [
+    "mcp__memcp__memcp_ping",
+    "mcp__memcp__memcp_remember",
+    "mcp__memcp__memcp_recall",
+    "mcp__memcp__memcp_forget",
+    "mcp__memcp__memcp_status",
+    "mcp__memcp__memcp_search",
+    "mcp__memcp__memcp_related",
+    "mcp__memcp__memcp_graph_stats",
+    "mcp__memcp__memcp_reinforce",
+    "mcp__memcp__memcp_consolidation_preview",
+    "mcp__memcp__memcp_consolidate",
+    "mcp__memcp__memcp_load_context",
+    "mcp__memcp__memcp_inspect_context",
+    "mcp__memcp__memcp_get_context",
+    "mcp__memcp__memcp_list_contexts",
+    "mcp__memcp__memcp_clear_context",
+    "mcp__memcp__memcp_retention_preview",
+    "mcp__memcp__memcp_retention_run",
+    "mcp__memcp__memcp_restore",
+    "mcp__memcp__memcp_projects",
+    "mcp__memcp__memcp_sessions",
+    "mcp__memcp__memcp_dedup_check",
+    "mcp__memcp__memcp_smart_remember",
+    "mcp__memcp__memcp_access_config",
+    "mcp__memcp__memcp_filter_context",
+    "mcp__memcp__memcp_chunk_context",
+    "mcp__memcp__memcp_peek_chunk"
+  ]
+}

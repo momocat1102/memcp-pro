@@ -1,6 +1,6 @@
 # memcp-pro
 
-一鍵安裝 [memcp](https://github.com/anthropics/memcp) 到 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — 跨 session 持久記憶。
+一鍵安裝 [memcp](https://github.com/maydali28/memcp) 到 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — 跨 session 持久記憶。
 
 ## 功能
 

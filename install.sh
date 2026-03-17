@@ -74,7 +74,7 @@ if [ -d "$MEMCP_DIR/src" ]; then
   cd "$MEMCP_DIR" && git pull --quiet 2>/dev/null || warn "git pull failed, using existing version"
 else
   info "Cloning memcp..."
-  git clone https://github.com/anthropics/memcp.git "$MEMCP_DIR" 2>/dev/null || {
+  git clone https://github.com/maydali28/memcp.git "$MEMCP_DIR" 2>/dev/null || {
     if [ -d "$MEMCP_DIR" ]; then
       warn "Clone failed, directory exists. Trying git pull..."
       cd "$MEMCP_DIR" && git pull --quiet 2>/dev/null || true

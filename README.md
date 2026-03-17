@@ -1,6 +1,6 @@
 # memcp-pro
 
-One-click setup for [memcp](https://github.com/anthropics/memcp) with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — persistent memory across sessions.
+One-click setup for [memcp](https://github.com/maydali28/memcp) with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — persistent memory across sessions.
 
 ## What This Does
 
